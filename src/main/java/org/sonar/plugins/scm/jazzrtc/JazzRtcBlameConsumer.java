@@ -19,10 +19,11 @@
  */
 package org.sonar.plugins.scm.jazzrtc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.batch.scm.BlameLine;
 import org.sonar.api.utils.command.StreamConsumer;
+import sun.rmi.runtime.Log;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -36,14 +37,14 @@ import java.util.regex.Pattern;
 
 public class JazzRtcBlameConsumer implements StreamConsumer {
 
-  private static final Logger LOG = LoggerFactory.getLogger(JazzRtcBlameConsumer.class);
+  private static final Logger LOG = Loggers.get(JazzRtcBlameConsumer.class);
 
   private static final String JAZZ_TIMESTAMP_PATTERN = "yyyy-MM-dd hh:mm a";
 
   // 1 Julien HENRY (1008) 2011-12-14 09:14 AM Test.txt
   // 2 Julien HENRY (1005) 2011-12-14 09:14 AM My commit comment.
 
-  private static final String LINE_PATTERN = "(\\d+)\\s+(.*?)\\s+\\((\\d+)\\) (\\d+-\\d+-\\d+ \\d+\\:\\d+ (AM|PM)) (.*)";
+  private static final String LINE_PATTERN = "(\\d+)\\s+(.*?)\\s+\\((\\d+)\\) (\\d+-\\d+-\\d+ \\d+\\:\\d+ (AM|PM)) (\\d+)(.*)";
 
   private List<BlameLine> lines = new ArrayList<BlameLine>();
 
@@ -78,7 +79,7 @@ public class JazzRtcBlameConsumer implements StreamConsumer {
       throw new IllegalStateException("Unable to blame file " + filename + ". Expecting blame info for line " + expectingLine + " but was " + lineIdx + ": " + line);
     }
     String owner = matcher.group(2);
-    String changeSetNumberStr = matcher.group(3);
+    String changeSetNumberStr = matcher.group(6);
     String dateStr = matcher.group(4);
     Date date = parseDate(dateStr);
     lines.add(new BlameLine().date(date).revision(changeSetNumberStr).author(owner));

@@ -25,19 +25,19 @@ import org.junit.Test;
 
 public class JazzRtcBlameConsumerTest {
   private static String[] lines = {
-    "1  Duarte (1058) 2015-05-29 11:23 AM  Share /* ",
-    "2  Duarte (1058) 2015-05-29 11:23 AM  Share  * Sonar, open source software quality management tool. ",
-    "3  Duarte (1058) 2015-05-29 11:23 AM  Share  * Copyright (C) 2008-2012 SonarSource ",
-    "4  Duarte (1058) 2015-05-29 11:23 AM  Share  * mailto:contact AT sonarsource DOT com ",
-    "5  Duarte (1058) 2015-05-29 11:23 AM  Share  * ",
-    "6  Duarte (1058) 2015-05-29 11:23 AM  Share  * Sonar is free software; you can redistribute it and/or ",
-    "7  Duarte (1058) 2015-05-29 11:23 AM  Share  * modify it under the terms of the GNU Lesser General Public ",
-    "8  Duarte (1058) 2015-05-29 11:23 AM  Share  * License as published by the Free Software Foundation; either ",
-    "9  Duarte (1058) 2015-05-29 11:23 AM  Share  * version 3 of the License, or (at your option) any later version. ",
-    "10 Duarte (1058) 2015-05-29 11:23 AM  Share  * ",
-    "11 Duarte (1058) 2015-05-29 11:23 AM  Share  * Sonar is distributed in the hope that it will be useful, ",
-    "12 Duarte (1058) 2015-05-29 11:23 AM  Share  * but WITHOUT ANY WARRANTY; without even the implied warranty of ",
-    "13 Duarte    (1058) 2015-05-29 11:23 AM  Share  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU "
+    "1  Duarte (1058) 2015-05-29 11:23 AM  651579 Share /* ",
+    "2  Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * Sonar, open source software quality management tool. ",
+    "3  Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * Copyright (C) 2008-2012 SonarSource ",
+    "4  Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * mailto:contact AT sonarsource DOT com ",
+    "5  Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * ",
+    "6  Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * Sonar is free software; you can redistribute it and/or ",
+    "7  Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * modify it under the terms of the GNU Lesser General Public ",
+    "8  Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * License as published by the Free Software Foundation; either ",
+    "9  Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * version 3 of the License, or (at your option) any later version. ",
+    "10 Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * ",
+    "11 Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * Sonar is distributed in the hope that it will be useful, ",
+    "12 Duarte (1058) 2015-05-29 11:23 AM  651579 Share  * but WITHOUT ANY WARRANTY; without even the implied warranty of ",
+    "13 Duarte    (1058) 2015-05-29 11:23 AM 651579 Share  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU "
   };
 
   @Test
