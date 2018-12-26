@@ -20,7 +20,7 @@ public class JazzLoginHandler {
     private final JazzRtcConfiguration config;
 
     public JazzLoginHandler(System2 system, CommandExecutor commandExecutor, JazzRtcConfiguration config) {
-        commandCreator = new LscmCommandCreator(system);
+        commandCreator = new LscmCommandCreator(system, config);
         this.commandExecutor = commandExecutor;
         this.config = config;
     }

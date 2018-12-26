@@ -46,18 +46,18 @@ public class JazzRtcBlameCommand extends BlameCommand {
   private final JazzLoginHandler jazzLoginHandler;
   private final LscmCommandCreator lscmCommandCreator;
 
-  public JazzRtcBlameCommand(JazzRtcConfiguration configuration) {
-    this(CommandExecutor.create(), configuration);
-  }
-
   JazzRtcBlameCommand(CommandExecutor commandExecutor, JazzRtcConfiguration configuration) {
     this(commandExecutor, configuration, System2.INSTANCE);
+  }
+
+  public JazzRtcBlameCommand(JazzRtcConfiguration configuration) {
+    this(CommandExecutor.create(), configuration);
   }
   
   JazzRtcBlameCommand(CommandExecutor commandExecutor, JazzRtcConfiguration configuration, System2 system) {
     this.commandExecutor = commandExecutor;
     this.config = configuration;
-    this.lscmCommandCreator = new LscmCommandCreator(system);
+    this.lscmCommandCreator = new LscmCommandCreator(system, configuration);
     this.jazzLoginHandler = new JazzLoginHandler(system, commandExecutor, config);
   }
 

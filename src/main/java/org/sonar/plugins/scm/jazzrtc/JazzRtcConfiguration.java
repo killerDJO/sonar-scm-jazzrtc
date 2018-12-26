@@ -40,6 +40,7 @@ public class JazzRtcConfiguration {
   private static final long CMD_TIMEOUT = 60_000;
   public static final String USER_PROP_KEY = "sonar.jazzrtc.username";
   public static final String REPOSITORY_PROP_KEY = "sonar.jazzrtc.repository";
+  public static final String LSCM_PROP_KEY = "sonar.jazzrtc.lscm";
   public static final String PASSWORD_PROP_KEY = "sonar.jazzrtc.password.secured";
 
   private final Configuration  settings;
@@ -78,7 +79,17 @@ public class JazzRtcConfiguration {
         .onQualifiers(Qualifiers.PROJECT)
         .category(CoreProperties.CATEGORY_SCM)
         .subCategory(CATEGORY_JAZZ)
-        .index(0)
+        .index(2)
+        .build());
+
+    properties.add(PropertyDefinition.builder(LSCM_PROP_KEY)
+        .name("LSCM Path")
+        .description("Path to the lscm tool to use.")
+        .type(PropertyType.STRING)
+        .onQualifiers(Qualifiers.PROJECT)
+        .category(CoreProperties.CATEGORY_SCM)
+        .subCategory(CATEGORY_JAZZ)
+        .index(3)
         .build());
 
     return properties;
@@ -97,6 +108,11 @@ public class JazzRtcConfiguration {
   @CheckForNull
   public String repository() {
     return settings.get(REPOSITORY_PROP_KEY).orElse(null);
+  }
+
+  @CheckForNull
+  public String lscmPath() {
+    return settings.get(LSCM_PROP_KEY).orElse(null);
   }
   
   public long commandTimeout() {
