@@ -1,8 +1,5 @@
 Manifest-Version: 1.0
 Plugin-License: GNU LGPL 3
-Plugin-OrganizationUrl: http://www.sonarsource.com
-Built-By: sonarsource
-Created-By: Apache Maven 3.0.5
 Plugin-Version: 2
 Plugin-Class: org.sonar.plugins.scm.jazzrtc.JazzRtcPlugin
 Sonar-Version: 7.4
@@ -11,4 +8,3 @@ Plugin-Organization: SonarSource
 Plugin-Name: Jazz RTC
 Plugin-Description: Jazz Rational Team Concert SCM Provider.
 Plugin-Key: scmjazzrtc
-Archiver-Version: Plexus Archiver

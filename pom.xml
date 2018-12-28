@@ -65,6 +65,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20180130</version>
+    </dependency>
+
     <!-- unit tests -->
     <dependency>
       <groupId>org.assertj</groupId>

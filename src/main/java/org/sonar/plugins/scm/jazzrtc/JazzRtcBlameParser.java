@@ -19,11 +19,11 @@
  */
 package org.sonar.plugins.scm.jazzrtc;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.batch.scm.BlameLine;
-import org.sonar.api.utils.command.StreamConsumer;
-import sun.rmi.runtime.Log;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -32,57 +32,46 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class JazzRtcBlameConsumer implements StreamConsumer {
+public class JazzRtcBlameParser {
 
-  private static final Logger LOG = Loggers.get(JazzRtcBlameConsumer.class);
-
+  private static final Logger LOG = Loggers.get(JazzRtcBlameParser.class);
   private static final String JAZZ_TIMESTAMP_PATTERN = "yyyy-MM-dd hh:mm a";
 
-  // 1 Julien HENRY (1008) 2011-12-14 09:14 AM Test.txt
-  // 2 Julien HENRY (1005) 2011-12-14 09:14 AM My commit comment.
-
-  private static final String LINE_PATTERN = "(\\d+)\\s+(.*?)\\s+\\((\\d+)\\) (\\d+-\\d+-\\d+ \\d+\\:\\d+ (AM|PM)) (\\d+)(.*)";
-
-  private List<BlameLine> lines = new ArrayList<BlameLine>();
-
   private DateFormat format;
-
   private final String filename;
 
-  private Pattern pattern;
-
-  public JazzRtcBlameConsumer(String filename) {
+  public JazzRtcBlameParser(String filename) {
     this.filename = filename;
     this.format = new SimpleDateFormat(JAZZ_TIMESTAMP_PATTERN, Locale.ENGLISH);
-    this.pattern = Pattern.compile(LINE_PATTERN);
   }
 
-  @Override
-  public void consumeLine(String line) {
-    int expectingLine = getLines().size() + 1;
-    Matcher matcher = pattern.matcher(line);
-    if (!matcher.matches()) {
-      // Probably code, ignore
-      return;
+  public List<BlameLine> parse(String output) {
+    List<BlameLine> lines = new ArrayList<>();
+    //LOG.info("Output: " + output);
+    JSONObject outputObject = new JSONObject(output);
+    JSONArray annotations = outputObject.getJSONArray("annotations");
+
+    for (int i = 0; i < annotations.length(); ++i) {
+        JSONObject annotation = annotations.getJSONObject(i);
+        int lineNumber = annotation.getInt("line-no");
+        String author = annotation.getString("author");
+        Date modifiedDate = parseDate(annotation.getString("modified"));
+        String changesetId = annotation.getString("uuid");
+        String workitem = annotation.getString("workitem");
+
+        int expectedLine = i + 1;
+        if(lineNumber != expectedLine) {
+          throw new IllegalStateException("Unable to blame file " + filename + ". Expecting blame info for line " + expectedLine + " but was " + lineNumber);
+        }
+
+        String changeset = String.format("%s (%s)", workitem, changesetId);
+        lines.add(new BlameLine().date(modifiedDate).revision(changeset).author(author));
+
+        LOG.info(new BlameLine().date(modifiedDate).revision(changeset).author(author).toString());
     }
-    String lineStr = matcher.group(1);
-    int lineIdx;
-    try {
-      lineIdx = Integer.parseInt(lineStr);
-    } catch (NumberFormatException e) {
-      throw new IllegalStateException("Unable to blame file " + filename + ". Unrecognized blame info at line " + expectingLine + ": " + line);
-    }
-    if (expectingLine != lineIdx) {
-      throw new IllegalStateException("Unable to blame file " + filename + ". Expecting blame info for line " + expectingLine + " but was " + lineIdx + ": " + line);
-    }
-    String owner = matcher.group(2);
-    String changeSetNumberStr = matcher.group(6);
-    String dateStr = matcher.group(4);
-    Date date = parseDate(dateStr);
-    lines.add(new BlameLine().date(date).revision(changeSetNumberStr).author(owner));
+
+    return lines;
   }
 
   /**
@@ -90,7 +79,7 @@ public class JazzRtcBlameConsumer implements StreamConsumer {
    *
    * @return A date representing the timestamp of the log entry.
    */
-  protected Date parseDate(String date) {
+  private Date parseDate(String date) {
     try {
       return format.parse(date);
     } catch (ParseException e) {
@@ -99,9 +88,5 @@ public class JazzRtcBlameConsumer implements StreamConsumer {
           + " with pattern " + JAZZ_TIMESTAMP_PATTERN + " with Locale " + Locale.ENGLISH, e);
       return null;
     }
-  }
-
-  public List<BlameLine> getLines() {
-    return lines;
   }
 }

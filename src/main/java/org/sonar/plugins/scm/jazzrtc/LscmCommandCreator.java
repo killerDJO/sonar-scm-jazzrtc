@@ -23,6 +23,9 @@ public class LscmCommandCreator {
             command.setNewShell(true);
         }
 
+        // Disable aliasing
+        command.addArgument("-a");
+        command.addArgument("n");
         command.addArguments(args);
 
         return command;

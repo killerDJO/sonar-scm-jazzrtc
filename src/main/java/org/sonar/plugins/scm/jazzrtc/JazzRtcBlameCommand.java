@@ -82,10 +82,12 @@ public class JazzRtcBlameCommand extends BlameCommand {
     String filename = inputFile.relativePath();
     LOG.info("SCM JAZZ: Blame " + filename);
     Command cl = createAnnotateCommand(fs.baseDir(), filename);
-    JazzRtcBlameConsumer consumer = new JazzRtcBlameConsumer(filename);
+    JazzRtcBlameParser parser = new JazzRtcBlameParser(filename);
+
+    StringStreamConsumer stdout = new StringStreamConsumer();
     StringStreamConsumer stderr = new StringStreamConsumer();
 
-    int exitCode = executeAnnotate(cl, consumer, stderr);
+    int exitCode = executeAnnotate(cl, stdout, stderr);
     if (UNTRACKED_BLAME_RETURN_CODES.contains(exitCode)) {
       LOG.info("Skipping untracked file: {}. Annotate command exit code: {}. Error: {}", filename, exitCode, stderr.getOutput());
       return;
@@ -93,7 +95,7 @@ public class JazzRtcBlameCommand extends BlameCommand {
       throw new IllegalStateException("The jazz annotate command [" + cl.toString() + "] failed: " + stderr.getOutput());
     }
 
-    List<BlameLine> lines = consumer.getLines();
+    List<BlameLine> lines = parser.parse(stdout.getOutput());
     if (lines.size() == inputFile.lines() - 1) {
       // SONARPLUGINS-3097 JazzRTC does not report blame on last empty line
       lines.add(lines.get(lines.size() - 1));
@@ -119,7 +121,7 @@ public class JazzRtcBlameCommand extends BlameCommand {
   }
 
   private Command createAnnotateCommand(File workingDirectory, String filename) {
-    Command command = lscmCommandCreator.createLscmCommand("annotate", filename);
+    Command command = lscmCommandCreator.createLscmCommand("annotate", filename, "-j");
     command.setDirectory(workingDirectory);
     return command;
   }
