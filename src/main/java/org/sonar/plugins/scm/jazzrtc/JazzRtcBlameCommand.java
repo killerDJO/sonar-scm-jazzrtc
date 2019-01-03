@@ -46,6 +46,7 @@ public class JazzRtcBlameCommand extends BlameCommand {
   private final JazzLoginHandler jazzLoginHandler;
   private final LscmCommandCreator lscmCommandCreator;
 
+
   JazzRtcBlameCommand(CommandExecutor commandExecutor, JazzRtcConfiguration configuration) {
     this(commandExecutor, configuration, System2.INSTANCE);
   }
@@ -82,7 +83,7 @@ public class JazzRtcBlameCommand extends BlameCommand {
     String filename = inputFile.relativePath();
     LOG.info("SCM JAZZ: Blame " + filename);
     Command cl = createAnnotateCommand(fs.baseDir(), filename);
-    JazzRtcBlameParser parser = new JazzRtcBlameParser(filename);
+    JazzRtcBlameParser parser = new JazzRtcBlameParser(filename, config);
 
     StringStreamConsumer stdout = new StringStreamConsumer();
     StringStreamConsumer stderr = new StringStreamConsumer();

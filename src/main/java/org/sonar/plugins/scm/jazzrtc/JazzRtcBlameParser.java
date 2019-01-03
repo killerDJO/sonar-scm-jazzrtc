@@ -40,10 +40,12 @@ public class JazzRtcBlameParser {
 
   private DateFormat format;
   private final String filename;
+  private final UserNameResolver userNameResolver;
 
-  public JazzRtcBlameParser(String filename) {
+  public JazzRtcBlameParser(String filename, JazzRtcConfiguration configuration) {
     this.filename = filename;
     this.format = new SimpleDateFormat(JAZZ_TIMESTAMP_PATTERN, Locale.ENGLISH);
+    this.userNameResolver = new UserNameResolver(configuration);
   }
 
   public List<BlameLine> parse(String output) {
@@ -66,9 +68,11 @@ public class JazzRtcBlameParser {
         }
 
         String changeset = String.format("%s (%s)", workitem, changesetId);
-        lines.add(new BlameLine().date(modifiedDate).revision(changeset).author(author));
+        String username = userNameResolver.resolveUserId(author);
+        BlameLine line = new BlameLine().date(modifiedDate).revision(changeset).author(username);
+        lines.add(line);
 
-        LOG.info(new BlameLine().date(modifiedDate).revision(changeset).author(author).toString());
+        LOG.info(line.toString());
     }
 
     return lines;
