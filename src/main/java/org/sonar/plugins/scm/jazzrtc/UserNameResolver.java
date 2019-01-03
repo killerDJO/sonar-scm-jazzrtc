@@ -121,7 +121,7 @@ public class UserNameResolver {
         IContributorManager contributorManager = repository.contributorManager();
         IContributorIdentity identity = IContributorIdentity.FACTORY.create(handle.getItemId());
         IContributorRecord record = contributorManager.fetchContributorRecordByIdentity(identity, IItemManager.DEFAULT , null);
-        String userId = record.getUserIds().get(0).getUserId();
+        String userId = record.getEmailAddress();
         LOG.info("User {} has been resolved to the following login: {}", name, userId);
         return userId;
     }
